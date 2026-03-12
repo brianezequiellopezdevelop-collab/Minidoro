@@ -8,8 +8,9 @@ import { useAudio } from "./hooks/useAudio";
 
 export default function Home() {
   const { tareas, setTareas } = useTareas();
-  const { sesiones, setSesiones } = useSesiones();
+  const { setSesiones } = useSesiones();
   const { config } = useConfig();
+  const { reproducir } = useAudio();
   const [modo, setModo] = useState("pomodoro");
   const [segundos, setSegundos] = useState(25 * 60);
   const [corriendo, setCorriendo] = useState(false);
@@ -18,21 +19,25 @@ export default function Home() {
   const [notaTexto, setNotaTexto] = useState("");
   const intervaloRef = useRef(null);
   const tareaActivaRef = useRef(null);
-  const { reproducir } = useAudio(config.volumen);
+  const configRef = useRef(config);
+
+  // Mantener configRef actualizado
+  useEffect(() => {
+    configRef.current = config;
+  }, [config]);
 
   const MODOS = {
-    pomodoro: { label: "Pomodoro", duracion: config.pomodoro * 60 },
+    pomodoro: { label: "Pomodoro", duracion: (config.pomodoro || 25) * 60 },
     descansoCorto: {
       label: "Descanso corto",
-      duracion: config.descansoCorto * 60,
+      duracion: (config.descansoCorto || 5) * 60,
     },
     descansoLargo: {
       label: "Descanso largo",
-      duracion: config.descansoLargo * 60,
+      duracion: (config.descansoLargo || 15) * 60,
     },
   };
 
-  // Cargar nota guardada
   useEffect(() => {
     const guardada = localStorage.getItem("nota");
     if (guardada) {
@@ -42,25 +47,21 @@ export default function Home() {
     }
   }, []);
 
-  // Guardar nota cuando cambia
   useEffect(() => {
     localStorage.setItem(
       "nota",
-      JSON.stringify({
-        titulo: notaTitulo,
-        texto: notaTexto,
-      }),
+      JSON.stringify({ titulo: notaTitulo, texto: notaTexto }),
     );
   }, [notaTitulo, notaTexto]);
 
   useEffect(() => {
     pausar();
-    setSegundos(config[modo] * 60);
+    setSegundos((config[modo] || 25) * 60);
   }, [modo]);
 
   useEffect(() => {
     pausar();
-    setSegundos(config[modo] * 60);
+    setSegundos((config[modo] || 25) * 60);
   }, [config]);
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export default function Home() {
       if (modo === "pomodoro") {
         completarPomodoro();
       } else {
-        reproducir("descanso");
+        reproducir("descanso", configRef.current.volumen || 80);
       }
     }
   }, [segundos]);
@@ -92,7 +93,8 @@ export default function Home() {
 
   function completarPomodoro() {
     const tarea = tareaActivaRef.current;
-    reproducir("pomodoro");
+    const volumen = configRef.current.volumen || 80;
+    reproducir("pomodoro", volumen);
     if (!tarea) return;
     setTareas((prev) =>
       prev.map((t) => {
@@ -108,7 +110,7 @@ export default function Home() {
       titulo: tarea.titulo,
       color: tarea.color,
       fecha: new Date().toISOString().split("T")[0],
-      duracion: config.pomodoro,
+      duracion: configRef.current.pomodoro || 25,
     };
     setSesiones((prev) => [...prev, nuevaSesion]);
   }
@@ -120,7 +122,7 @@ export default function Home() {
 
   function resetear() {
     pausar();
-    setSegundos(config[modo] * 60);
+    setSegundos((config[modo] || 25) * 60);
   }
 
   function formatearTiempo(s) {

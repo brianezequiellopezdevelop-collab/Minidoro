@@ -6,6 +6,7 @@ const CONFIG_DEFAULT = {
   pomodoro: 25,
   descansoCorto: 5,
   descansoLargo: 15,
+  volumen: 80,
 };
 
 export function useConfig() {
