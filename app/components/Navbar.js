@@ -19,7 +19,7 @@ export default function Navbar() {
     <nav className="border-b border-white/10 px-4 py-4">
       <div className="max-w-4xl mx-auto flex items-center justify-between">
         <span className="text-red-500 font-bold text-lg tracking-widest uppercase">
-          Pomodoro
+          DEVIATAN_
         </span>
 
         {/* Links — desktop */}
