@@ -20,6 +20,7 @@ export default function Home() {
   const intervaloRef = useRef(null);
   const tareaActivaRef = useRef(null);
   const configRef = useRef(config);
+  const [pomodorosEnRacha, setPomodorosEnRacha] = useState(0);
 
   // Mantener configRef actualizado
   useEffect(() => {
@@ -95,6 +96,16 @@ export default function Home() {
     const tarea = tareaActivaRef.current;
     const volumen = configRef.current.volumen || 80;
     reproducir("pomodoro", volumen);
+
+    const nuevaRacha = pomodorosEnRacha + 1;
+    setPomodorosEnRacha(nuevaRacha);
+
+    if (nuevaRacha % 4 === 0) {
+      setModo("descansoLargo");
+    } else {
+      setModo("descansoCorto");
+    }
+
     if (!tarea) return;
     setTareas((prev) =>
       prev.map((t) => {
