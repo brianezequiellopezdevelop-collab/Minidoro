@@ -116,7 +116,7 @@ export default function Configuracion() {
         onClick={guardar}
         className={`w-full py-3 rounded-xl text-sm font-semibold transition-all ${
           guardado
-            ? "bg-green-500 text-white"
+            ? "bg-red-800 text-white"
             : "bg-red-500 hover:bg-red-600 text-white"
         }`}
       >
