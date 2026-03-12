@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useTareas } from "./hooks/useTareas";
 import { useSesiones } from "./hooks/useSesiones";
 import { useConfig } from "./hooks/useConfig";
+import { useAudio } from "./hooks/useAudio";
 
 export default function Home() {
   const { tareas, setTareas } = useTareas();
@@ -17,6 +18,7 @@ export default function Home() {
   const [notaTexto, setNotaTexto] = useState("");
   const intervaloRef = useRef(null);
   const tareaActivaRef = useRef(null);
+  const { reproducir } = useAudio(config.volumen);
 
   const MODOS = {
     pomodoro: { label: "Pomodoro", duracion: config.pomodoro * 60 },
@@ -76,7 +78,11 @@ export default function Home() {
   useEffect(() => {
     if (segundos === 0) {
       pausar();
-      if (modo === "pomodoro") completarPomodoro();
+      if (modo === "pomodoro") {
+        completarPomodoro();
+      } else {
+        reproducir("descanso");
+      }
     }
   }, [segundos]);
 
@@ -86,6 +92,7 @@ export default function Home() {
 
   function completarPomodoro() {
     const tarea = tareaActivaRef.current;
+    reproducir("pomodoro");
     if (!tarea) return;
     setTareas((prev) =>
       prev.map((t) => {
