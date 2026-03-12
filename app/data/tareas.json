@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "titulo": "Matemáticas",
+    "pomodorosObjetivo": 8,
+    "pomodorosCompletados": 2,
+    "color": "#ef4444"
+  },
+  {
+    "id": 2,
+    "titulo": "Historia",
+    "pomodorosObjetivo": 4,
+    "pomodorosCompletados": 1,
+    "color": "#3b82f6"
+  }
+]
