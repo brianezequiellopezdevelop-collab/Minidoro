@@ -147,7 +147,7 @@ export default function Home() {
   const progreso = 1 - segundos / MODOS[modo].duracion;
 
   return (
-    <div className="flex gap-8 items-start mt-10">
+    <div className="flex flex-col lg:flex-row gap-8 items-start mt-10">
       {/* Columna izquierda — Timer */}
       <div className="flex flex-col items-center gap-8 flex-1">
         {/* Selector de modo */}
@@ -249,7 +249,7 @@ export default function Home() {
       </div>
 
       {/* Columna derecha — Nota */}
-      <aside className="w-72 bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col gap-4 sticky top-8">
+      <aside className="hidden lg:flex w-72 bg-white/5 border border-white/10 rounded-2xl p-5 flex-col gap-4 sticky top-8">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
           <span className="text-xs text-white/40 uppercase tracking-widest">
