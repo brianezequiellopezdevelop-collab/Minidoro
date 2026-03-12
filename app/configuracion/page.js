@@ -100,3 +100,22 @@ export default function Configuracion() {
     </div>
   );
 }
+<div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+  <div className="flex items-center justify-between mb-4">
+    <div>
+      <p className="text-sm font-medium">Volumen</p>
+      <p className="text-xs text-white/40 mt-0.5">
+        Volumen de las notificaciones
+      </p>
+    </div>
+    <span className="text-sm text-white/40">{config.volumen}%</span>
+  </div>
+  <input
+    type="range"
+    min="0"
+    max="100"
+    value={config.volumen}
+    onChange={(e) => actualizar("volumen", e.target.value)}
+    className="w-full accent-red-500"
+  />
+</div>;
