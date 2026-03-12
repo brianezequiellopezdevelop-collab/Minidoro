@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Cuerpo -->
+  <ellipse cx="16" cy="18" rx="7" ry="5" fill="#ef4444"/>
+  <!-- Cola izquierda -->
+  <path d="M9 18 Q4 14 6 10 Q8 15 11 16Z" fill="#ef4444"/>
+  <!-- Cola derecha -->
+  <path d="M23 18 Q28 14 26 10 Q24 15 21 16Z" fill="#ef4444"/>
+  <!-- Cabeza -->
+  <ellipse cx="16" cy="12" rx="5" ry="4" fill="#ef4444"/>
+  <!-- Cuernos -->
+  <path d="M13 9 Q11 5 13 4 Q14 7 14 9Z" fill="#991b1b"/>
+  <path d="M19 9 Q21 5 19 4 Q18 7 18 9Z" fill="#991b1b"/>
+  <!-- Ojo izquierdo -->
+  <circle cx="14" cy="12" r="1" fill="#0f0f0f"/>
+  <!-- Ojo derecho -->
+  <circle cx="18" cy="12" r="1" fill="#0f0f0f"/>
+  <!-- Brillo ojos -->
+  <circle cx="14.4" cy="11.6" r="0.3" fill="white"/>
+  <circle cx="18.4" cy="11.6" r="0.3" fill="white"/>
+</svg>

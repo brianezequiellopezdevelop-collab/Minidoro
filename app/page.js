@@ -1,5 +1,5 @@
 "use client";
-
+import Head from "next/head";
 import { useState, useEffect, useRef } from "react";
 import { useTareas } from "./hooks/useTareas";
 import { useSesiones } from "./hooks/useSesiones";
@@ -91,6 +91,11 @@ export default function Home() {
   useEffect(() => {
     tareaActivaRef.current = tareaActiva;
   }, [tareaActiva]);
+
+  useEffect(() => {
+    const modoLabel = MODOS[modo]?.label || "Pomodoro";
+    document.title = `${modoLabel} - ${formatearTiempo(segundos)} | DEVIATAN_`;
+  }, [segundos, modo]);
 
   function completarPomodoro() {
     const tarea = tareaActivaRef.current;
