@@ -1,5 +1,4 @@
 "use client";
-import Head from "next/head";
 import { useState, useEffect, useRef } from "react";
 import { useTareas } from "./hooks/useTareas";
 import { useSesiones } from "./hooks/useSesiones";
@@ -11,16 +10,33 @@ export default function Home() {
   const { setSesiones } = useSesiones();
   const { config } = useConfig();
   const { reproducir } = useAudio();
-  const [modo, setModo] = useState("pomodoro");
-  const [segundos, setSegundos] = useState(25 * 60);
-  const [corriendo, setCorriendo] = useState(false);
   const [tareaActiva, setTareaActiva] = useState(null);
   const [notaTitulo, setNotaTitulo] = useState("");
   const [notaTexto, setNotaTexto] = useState("");
   const intervaloRef = useRef(null);
   const tareaActivaRef = useRef(null);
   const configRef = useRef(config);
+  const primerRenderRef = useRef(true);
+
+  const [modo, setModo] = useState("pomodoro");
+  const [segundos, setSegundos] = useState(25 * 60);
+  const [corriendo, setCorriendo] = useState(false);
   const [pomodorosEnRacha, setPomodorosEnRacha] = useState(0);
+  const [timerCargado, setTimerCargado] = useState(false);
+
+  // Cargar estado guardado
+  useEffect(() => {
+    const guardado = localStorage.getItem("timerEstado");
+    if (guardado) {
+      const { modo, segundos, pomodorosEnRacha, corriendo } =
+        JSON.parse(guardado);
+      setModo(modo || "pomodoro");
+      setSegundos(segundos || 25 * 60);
+      setPomodorosEnRacha(pomodorosEnRacha || 0);
+      setCorriendo(corriendo || false);
+    }
+    setTimerCargado(true);
+  }, []);
 
   // Mantener configRef actualizado
   useEffect(() => {
@@ -39,6 +55,7 @@ export default function Home() {
     },
   };
 
+  // Cargar nota guardada
   useEffect(() => {
     const guardada = localStorage.getItem("nota");
     if (guardada) {
@@ -48,6 +65,7 @@ export default function Home() {
     }
   }, []);
 
+  // Guardar nota
   useEffect(() => {
     localStorage.setItem(
       "nota",
@@ -55,17 +73,26 @@ export default function Home() {
     );
   }, [notaTitulo, notaTexto]);
 
+  // Resetear timer al cambiar modo
   useEffect(() => {
-    pausar();
+    if (!timerCargado) return;
+    if (primerRenderRef.current) {
+      primerRenderRef.current = false;
+      return;
+    }
     setSegundos((config[modo] || 25) * 60);
   }, [modo]);
 
+  // Resetear timer al cambiar config
   useEffect(() => {
-    pausar();
+    if (!timerCargado) return;
+    if (primerRenderRef.current) return;
     setSegundos((config[modo] || 25) * 60);
   }, [config]);
 
+  // Intervalo del timer
   useEffect(() => {
+    if (!timerCargado) return;
     if (corriendo) {
       intervaloRef.current = setInterval(() => {
         setSegundos((s) => {
@@ -75,8 +102,9 @@ export default function Home() {
       }, 1000);
     }
     return () => clearInterval(intervaloRef.current);
-  }, [corriendo]);
+  }, [corriendo, timerCargado]);
 
+  // Detectar cuando llega a 0
   useEffect(() => {
     if (segundos === 0) {
       pausar();
@@ -88,14 +116,30 @@ export default function Home() {
     }
   }, [segundos]);
 
+  // Sincronizar tareaActivaRef
   useEffect(() => {
     tareaActivaRef.current = tareaActiva;
   }, [tareaActiva]);
 
+  // Título de la pestaña
   useEffect(() => {
     const modoLabel = MODOS[modo]?.label || "Pomodoro";
     document.title = `${modoLabel} - ${formatearTiempo(segundos)} | DEVIATAN_`;
   }, [segundos, modo]);
+
+  // Guardar estado del timer
+  useEffect(() => {
+    if (!timerCargado) return;
+    localStorage.setItem(
+      "timerEstado",
+      JSON.stringify({
+        modo,
+        segundos,
+        pomodorosEnRacha,
+        corriendo,
+      }),
+    );
+  }, [modo, segundos, pomodorosEnRacha, corriendo, timerCargado]);
 
   function completarPomodoro() {
     const tarea = tareaActivaRef.current;
